@@ -5,33 +5,94 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>나만의 메모장</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="jslink"></script>
+    <style>
+      input {
+        width: 50vw;
+        height: 5vh;
+        border: 1px dashed green;
+        border-radius: 5px;
+        padding-left: 10px;
+      }
+      button {
+        width: 100px;
+        height: 30px;
+        background: forestgreen;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      button:focus {
+        background-color: honeydew;
+        color: forestgreen;
+      }
+      article {
+        padding: 20px 0px 20px 100px;
+      }
+    </style>
   </head>
   <body>
-    <section class="planner_container">
-        <h1>To Do List</h1>
+    <article>
+      <h1>To Do List📝</h1>
 
-        <section class="year_plan">
-          <h2>연간계획표✨</h2>
-          <div class="items_container">
+      <form>
+        <input id="item" type="text" placeholder="새로운 일정을 추가하세요!" autocomplete="off">
+      </form>
 
-            <section class="month_item january">
-              <ul class="month_list">
-                <li><h3>1월</h3></li>
-                <li><input id="inpSchedule" type="text" placeholder="일정을 입력해서 추가하세요"></li>
-                <li class="add"></li>
-              </ul>
-            </section>
+      <h2>오늘의 할 일</h2>
+      <ul></ul>
 
-            <section class="month_item">2</section>
-            <section class="month_item">3</section>
-            <section class="month_item">4</section>
-          </div>
-        </section>
+      <button class="clear">삭제</button>
+      <button class="clearAll">모두 삭제</button>
+    </article>
 
-    </section>
-    <section class="add_list"></section>
+    <script>
+      const form = document.querySelector("form");
+      const ul = document.querySelector("ul");
+      const clear = document.querySelector(".clear");
+      const clearAll = document.querySelector(".clearAll");
+      const input = document.getElementById("item");
+      let itemsArray = localStorage.getItem("items")?JSON.parse(localStorage.getItem("items")):[];
+
+      localStorage.setItem("items", JSON.stringify(itemsArray));
+      const data = JSON.parse(localStorage.getItem("items"));
+
+
+      const liMarker = (text) => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        ul.appendChild(li);
+      }
+
+      form.addEventListener("submit", function (e){
+        e.preventDefault();
+
+        itemsArray.push(input.value);
+        localStorage.setItem("item", JSON.stringify(itemsArray));
+        liMarker(input.value);
+        input.value = "";
+      });
+
+      data.forEach(item => {
+        liMarker(item);
+      })
+
+      clear.addEventListener("click", ()=> {
+        const lastLi = document.querySelector("ul>li:last-child");
+        const text = lastLi.textContent;
+        localStorage.removeItem(text);
+        lastLi.remove();
+      })
+
+      clearAll.addEventListener("click", ()=> {
+        localStorage.clear();
+        while(ul.firstChild){
+        ul.removeChild(ul.firstChild);
+        }
+      });
+
+    </script>
   </body>
 </html>
 
